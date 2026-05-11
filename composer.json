@@ -9,6 +9,13 @@
             "TrueAdmin\\Kernel\\": "src/"
         }
     },
+    "scripts": {
+        "lint": "find src -name '*.php' -print0 | xargs -0 -n1 php -l",
+        "check": [
+            "composer validate --strict",
+            "@lint"
+        ]
+    },
     "require": {
         "php": ">=8.1",
         "hyperf/config": "~3.1.0",
