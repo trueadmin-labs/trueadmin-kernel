@@ -1,0 +1,28 @@
+{
+    "name": "trueadmin/kernel",
+    "type": "library",
+    "description": "TrueAdmin reusable backend kernel package.",
+    "license": "MIT",
+    "homepage": "https://github.com/trueadmin-labs/trueadmin-kernel",
+    "autoload": {
+        "psr-4": {
+            "TrueAdmin\\Kernel\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=8.1",
+        "hyperf/config": "~3.1.0",
+        "hyperf/constants": "~3.1.0",
+        "hyperf/context": "~3.1.0",
+        "hyperf/contract": "~3.1.0",
+        "hyperf/database": "~3.1.0",
+        "hyperf/db-connection": "~3.1.0",
+        "hyperf/di": "~3.1.0",
+        "hyperf/event": "~3.1.0",
+        "hyperf/exception-handler": "~3.1.0",
+        "hyperf/http-server": "~3.1.0",
+        "hyperf/logger": "~3.1.0"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
