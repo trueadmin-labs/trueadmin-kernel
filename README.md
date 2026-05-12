@@ -2,7 +2,7 @@
 
 Reusable backend kernel package for TrueAdmin.
 
-This package contains backend primitives that are stable across projects: error codes, HTTP attributes, actor context, data-permission value objects, operation-log attributes, pagination/API envelope primitives, and CRUD query protocol classes.
+This package contains backend primitives that are stable across projects: error codes, HTTP attributes, actor context, data-permission value objects, operation-log attributes, pagination/API envelope primitives, CRUD query protocol classes, and Hyperf runtime services that do not depend on host business tables.
 
 Application-specific controllers, repositories, request classes, database resources, business services, and module/plugin facts stay in the template application or in each plugin.
 
@@ -30,3 +30,16 @@ The package also provides:
 - `TrueAdmin\Kernel\Pagination\PageResult`
 
 Projects can extend these classes or replace application-level bindings without modifying package source.
+
+## Hyperf Runtime Services
+
+The package provides reusable runtime services for a TrueAdmin backend:
+
+- Attribute route registration
+- Interface metadata scanning and OpenAPI document generation
+- Module/plugin migration and seeder path registration
+- Backend plugin runtime config reading
+- Module and plugin translation loading
+- SSE / `#[Streamable]` response runtime
+
+These services may depend on Hyperf, but they must not depend on `Module/System` tables or any application-specific business process.
