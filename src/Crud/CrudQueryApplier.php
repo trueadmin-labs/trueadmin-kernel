@@ -28,13 +28,18 @@ class CrudQueryApplier
 
     /**
      * @param null|callable(Builder, string, CrudOperator, mixed, string): void $conditionApplier
+     * @param null|callable(string): string $filterColumnResolver
      */
     public function applyFilters(
         Builder $query,
         CrudQuery $crudQuery,
         CrudQueryApplierOptions $options,
         ?callable $conditionApplier = null,
+        ?callable $filterColumnResolver = null,
     ): void {
+        $conditionApplier ??= $this->applyFilterCondition(...);
+        $filterColumnResolver ??= fn (string $field): string => $this->filterColumn($field, $options);
+
         foreach ($crudQuery->filters as $condition) {
             $field = $condition->field;
             $operator = $condition->op;
@@ -47,14 +52,14 @@ class CrudQueryApplier
             }
 
             $this->assertFilterable($field, $operator, $options);
-            $conditionApplier ??= $this->applyFilterCondition(...);
-            $conditionApplier($query, $field, $operator, $value, $this->filterColumn($field, $options));
+            $conditionApplier($query, $field, $operator, $value, $filterColumnResolver($field));
         }
     }
 
     /**
      * @param null|callable(Builder, CrudSortRule, string): void $sortRuleApplier
      * @param null|callable(Builder, string, string): void $defaultSortRuleApplier
+     * @param null|callable(CrudSortRule): string $sortColumnResolver
      */
     public function applySort(
         Builder $query,
@@ -62,19 +67,23 @@ class CrudQueryApplier
         CrudQueryApplierOptions $options,
         ?callable $sortRuleApplier = null,
         ?callable $defaultSortRuleApplier = null,
+        ?callable $sortColumnResolver = null,
     ): void {
+        $sortRuleApplier ??= $this->applySortRule(...);
+        $sortColumnResolver ??= fn (CrudSortRule $sort): string => $this->assertSortable($sort, $options);
+
         if ($crudQuery->sorts !== []) {
             foreach ($crudQuery->sorts as $sort) {
-                $sortRuleApplier ??= $this->applySortRule(...);
-                $sortRuleApplier($query, $sort, $this->assertSortable($sort, $options));
+                $sortRuleApplier($query, $sort, $sortColumnResolver($sort));
             }
             return;
         }
 
+        $defaultSortRuleApplier ??= function (Builder $query, string $field, string $direction) use ($options): void {
+            $this->applyDefaultSortRule($query, $field, $direction, $options);
+        };
+
         foreach ($options->defaultSort as $field => $direction) {
-            $defaultSortRuleApplier ??= function (Builder $query, string $field, string $direction) use ($options): void {
-                $this->applyDefaultSortRule($query, $field, $direction, $options);
-            };
             $defaultSortRuleApplier($query, (string) $field, $direction);
         }
     }
