@@ -19,10 +19,12 @@ final class ModuleTranslationLoaderFactory
         $files = $container->get(Filesystem::class);
         $plugins = $container->has(PluginRepository::class) ? $container->get(PluginRepository::class) : null;
         $paths = $config->get('translation.paths', []);
+        $paths = is_array($paths) ? $paths : [];
+        array_unshift($paths, dirname(__DIR__, 2) . '/resources/lang');
 
         return make(ModuleTranslationLoader::class, [
             'files' => $files,
-            'paths' => is_array($paths) ? $paths : [],
+            'paths' => array_values(array_unique($paths)),
             'plugins' => $plugins,
         ]);
     }
