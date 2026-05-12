@@ -26,7 +26,7 @@ class PermissionMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $permission = $this->permissionFromRoute($request);
-        if ($permission === null || $permission->public) {
+        if ($permission === null) {
             return $handler->handle($request);
         }
 

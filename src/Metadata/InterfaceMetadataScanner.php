@@ -231,7 +231,6 @@ class InterfaceMetadataScanner
                 'code' => $annotation->code,
                 'title' => $annotation->title,
                 'group' => $annotation->group,
-                'public' => $annotation->public,
             ];
         }
 
@@ -263,7 +262,6 @@ class InterfaceMetadataScanner
                 'codes' => $annotation->codes(),
                 'title' => $annotation->title,
                 'group' => $annotation->group,
-                'public' => $annotation->public,
             ];
         }
 

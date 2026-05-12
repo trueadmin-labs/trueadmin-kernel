@@ -112,11 +112,11 @@ class OpenApiDocumentBuilder
                 'permission' => $permissionRule['code'] ?? null,
                 'permissionMode' => $permissionRule['mode'] ?? null,
                 'permissions' => $permissionRule['codes'] ?? [],
-                'public' => (bool) ($permissionRule['public'] ?? false),
+                'authenticated' => $this->routeRequiresAuth($route),
             ],
         ];
 
-        if (! (bool) ($permissionRule['public'] ?? false) && str_starts_with((string) $route['path'], '/api/admin')) {
+        if ($this->routeRequiresAuth($route)) {
             $operation['security'] = $spec['security'] ?? [['bearerAuth' => []]];
         }
 
@@ -134,6 +134,17 @@ class OpenApiDocumentBuilder
     protected function normalizePath(string $path): string
     {
         return preg_replace('#\{([^}/]+)\}#', '{$1}', $path) ?? $path;
+    }
+
+    protected function routeRequiresAuth(array $route): bool
+    {
+        foreach ($route['middleware'] ?? [] as $middleware) {
+            if (is_string($middleware) && str_ends_with($middleware, 'AuthMiddleware')) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     protected function operationId(string $action, string $name): string

@@ -19,7 +19,6 @@ class Permission extends AbstractAnnotation
         public readonly string $code = '',
         public readonly string $title = '',
         public readonly string $group = '',
-        public readonly bool $public = false,
         public readonly array $anyOf = [],
         public readonly array $allOf = [],
     ) {
@@ -27,10 +26,6 @@ class Permission extends AbstractAnnotation
 
     public function mode(): string
     {
-        if ($this->public) {
-            return 'public';
-        }
-
         $hasCode = $this->code !== '';
         $hasAnyOf = $this->anyOf !== [];
         $hasAllOf = $this->allOf !== [];
@@ -53,7 +48,6 @@ class Permission extends AbstractAnnotation
     public function codes(): array
     {
         $codes = match ($this->mode()) {
-            'public' => [],
             'anyOf' => $this->anyOf,
             'allOf' => $this->allOf,
             default => [$this->code],
@@ -64,7 +58,7 @@ class Permission extends AbstractAnnotation
             $codes,
         )));
 
-        if ($this->mode() !== 'public' && in_array('', $codes, true)) {
+        if (in_array('', $codes, true)) {
             throw new InvalidArgumentException('Permission codes must not be empty.');
         }
 
