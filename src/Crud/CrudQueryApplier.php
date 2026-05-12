@@ -185,11 +185,16 @@ class CrudQueryApplier
 
     public function filterColumn(string $field, CrudQueryApplierOptions $options): string
     {
-        return $options->filterColumns[$field] ?? $field;
+        return $options->filterColumns[$field] ?? $this->defaultColumnName($field);
     }
 
     public function sortColumn(string $field, CrudQueryApplierOptions $options): string
     {
-        return $options->sortColumns[$field] ?? $field;
+        return $options->sortColumns[$field] ?? $this->defaultColumnName($field);
+    }
+
+    public function defaultColumnName(string $field): string
+    {
+        return strtolower((string) preg_replace('/(?<!^)[A-Z]/', '_$0', $field));
     }
 }
