@@ -16,6 +16,7 @@ use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface;
 use Psr\Container\ContainerInterface;
+use TrueAdmin\Kernel\Stream\SseStreamResponder;
 
 abstract class AbstractController
 {
@@ -27,4 +28,13 @@ abstract class AbstractController
 
     #[Inject]
     protected ResponseInterface $response;
+
+    /**
+     * @template TReturn
+     * @param callable(): TReturn $handler
+     */
+    protected function stream(callable $handler, string $completedMessage = '处理完成'): mixed
+    {
+        return $this->container->get(SseStreamResponder::class)->run($handler, $completedMessage);
+    }
 }
