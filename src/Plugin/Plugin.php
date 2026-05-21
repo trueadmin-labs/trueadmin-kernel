@@ -48,6 +48,13 @@ class Plugin
         return is_file($file) ? $file : null;
     }
 
+    public function permissionResourceFile(): ?string
+    {
+        $file = $this->path . '/resources/permissions.php';
+
+        return is_file($file) ? $file : null;
+    }
+
     public function dataPolicyResourceFile(): ?string
     {
         $file = $this->path . '/resources/data_policies.php';

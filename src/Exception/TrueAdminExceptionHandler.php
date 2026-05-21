@@ -49,7 +49,7 @@ class TrueAdminExceptionHandler extends ExceptionHandler
         return $this->json(
             $response,
             $throwable->httpStatus(),
-            ApiResponse::fail($throwable->businessCode(), $throwable->getMessage(), $throwable->params() ?: null),
+            ApiResponse::fail($throwable->businessCode(), $throwable->getMessage(), $throwable->params()),
         );
     }
 
@@ -58,7 +58,9 @@ class TrueAdminExceptionHandler extends ExceptionHandler
         return $this->json(
             $response,
             422,
-            ApiResponse::fail(ErrorCode::VALIDATION_FAILED->code(), ErrorCode::VALIDATION_FAILED->message(), $throwable->errors()),
+            ApiResponse::fail(ErrorCode::VALIDATION_FAILED->code(), ErrorCode::VALIDATION_FAILED->message(), [
+                'fields' => $throwable->errors(),
+            ]),
         );
     }
 

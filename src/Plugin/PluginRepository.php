@@ -126,6 +126,25 @@ class PluginRepository
     /**
      * @return list<string>
      */
+    public function permissionResourceFiles(): array
+    {
+        $files = [];
+
+        foreach ($this->enabled() as $plugin) {
+            $file = $plugin->permissionResourceFile();
+            if ($file !== null) {
+                $files[] = $file;
+            }
+        }
+
+        sort($files);
+
+        return array_values(array_unique($files));
+    }
+
+    /**
+     * @return list<string>
+     */
     public function dataPolicyResourceFiles(): array
     {
         $files = [];

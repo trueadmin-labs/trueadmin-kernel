@@ -76,7 +76,7 @@ class OpenApiDocumentBuilder
                 'bearerAuth' => [
                     'type' => 'http',
                     'scheme' => 'bearer',
-                    'bearerFormat' => 'JWT',
+                    'bearerFormat' => 'OpaqueSessionToken',
                 ],
             ],
         ];

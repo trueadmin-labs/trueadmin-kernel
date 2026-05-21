@@ -4,25 +4,47 @@ declare(strict_types=1);
 
 namespace TrueAdmin\Kernel\Http;
 
-use TrueAdmin\Kernel\Constant\ErrorCode;
-
 final class ApiResponse
 {
-    public static function success(mixed $data = null, string $message = 'success'): array
+    /**
+     * @param array<string, mixed> $meta
+     */
+    public static function success(mixed $data = null, array $meta = []): array
     {
         return [
-            'code' => ErrorCode::SUCCESS->code(),
-            'message' => $message,
+            'success' => true,
             'data' => $data,
+            'meta' => self::meta($meta),
         ];
     }
 
-    public static function fail(string $code, string $message, mixed $data = null): array
+    /**
+     * @param array<string, mixed> $details
+     * @param array<string, mixed> $meta
+     */
+    public static function fail(string $code, string $message, array $details = [], array $meta = []): array
     {
         return [
-            'code' => $code,
-            'message' => $message,
-            'data' => $data,
+            'success' => false,
+            'error' => [
+                'code' => $code,
+                'message' => $message,
+                'details' => $details,
+            ],
+            'meta' => self::meta($meta),
+        ];
+    }
+
+    /**
+     * @param array<string, mixed> $meta
+     * @return array<string, mixed>
+     */
+    private static function meta(array $meta): array
+    {
+        return [
+            'requestId' => $meta['requestId'] ?? null,
+            'timestamp' => $meta['timestamp'] ?? date(DATE_ATOM),
+            ...$meta,
         ];
     }
 }

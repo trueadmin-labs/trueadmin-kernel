@@ -11,9 +11,11 @@
     },
     "scripts": {
         "lint": "find src -name '*.php' -print0 | xargs -0 -n1 php -l",
+        "test": "php test/contract.php",
         "check": [
             "composer validate --strict",
-            "@lint"
+            "@lint",
+            "@test"
         ]
     },
     "require": {

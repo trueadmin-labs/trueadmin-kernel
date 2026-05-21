@@ -272,14 +272,52 @@ class InterfaceMetadataScanner
     {
         $codes = [];
 
+        foreach ($this->permissionResourceFiles() as $file) {
+            $items = require $file;
+            if (! is_array($items)) {
+                throw new \RuntimeException(sprintf('Permission resource file [%s] must return an array.', $file));
+            }
+
+            foreach ($items as $item) {
+                if (! is_array($item)) {
+                    throw new \RuntimeException(sprintf('Permission resource file [%s] contains an invalid permission item.', $file));
+                }
+
+                $code = isset($item['code']) ? trim((string) $item['code']) : '';
+                if ($code === '') {
+                    throw new \RuntimeException(sprintf('Permission resource file [%s] contains a permission without code.', $file));
+                }
+                if (isset($codes[$code])) {
+                    throw new \RuntimeException(sprintf('Duplicate permission code [%s] found while scanning interface metadata.', $code));
+                }
+
+                $codes[$code] = true;
+            }
+        }
+
         foreach ($this->resourceMenus() as $menu) {
             $permission = isset($menu['permission']) ? (string) $menu['permission'] : '';
-            if ($permission !== '') {
+            if ($permission !== '' && ! isset($codes[$permission])) {
                 $codes[$permission] = true;
             }
         }
 
         return $codes;
+    }
+
+    /**
+     * @return list<string>
+     */
+    protected function permissionResourceFiles(): array
+    {
+        $files = [
+            ...(glob(BASE_PATH . '/app/Module/*/resources/permissions.php') ?: []),
+            ...$this->plugins->permissionResourceFiles(),
+        ];
+
+        sort($files);
+
+        return array_values(array_unique($files));
     }
 
     protected function menuCodeForPermission(string $permission): string

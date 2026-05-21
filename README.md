@@ -42,4 +42,4 @@ The package provides reusable runtime services for a TrueAdmin backend:
 - Module and plugin translation loading
 - SSE / `#[Streamable]` response runtime
 
-These services may depend on Hyperf, but they must not depend on `Module/System` tables or any application-specific business process.
+These services may depend on Hyperf, but they must not depend on host application tables or any application-specific business process.
